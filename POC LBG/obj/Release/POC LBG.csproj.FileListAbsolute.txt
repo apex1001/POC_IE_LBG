@@ -1,0 +1,6 @@
+C:\Users\Apex\Documents\Visual Studio 2010\Projects\POC LBG\POC LBG\bin\Release\POC LBG.dll
+C:\Users\Apex\Documents\Visual Studio 2010\Projects\POC LBG\POC LBG\bin\Release\POC LBG.pdb
+C:\Users\Apex\Documents\Visual Studio 2010\Projects\POC LBG\POC LBG\obj\Release\Interop.SHDocVw.dll
+C:\Users\Apex\Documents\Visual Studio 2010\Projects\POC LBG\POC LBG\obj\Release\POC LBG.csproj.ResolveComReference.cache
+C:\Users\Apex\Documents\Visual Studio 2010\Projects\POC LBG\POC LBG\obj\Release\POC LBG.dll
+C:\Users\Apex\Documents\Visual Studio 2010\Projects\POC LBG\POC LBG\obj\Release\POC LBG.pdb

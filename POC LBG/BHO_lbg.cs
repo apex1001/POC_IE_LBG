@@ -40,7 +40,7 @@ namespace POC_LBG
         private static string BHOROOTKEYNAME = "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Browser Helper Objects";
         ArrayList forbiddenTags = new ArrayList { "script", "style", "img", "audio", "table", "time", "video" };
         String regex = "(0|\\+|\\(\\+|\\(0)[0-9- ()]{9,}";
-        String url = "http://callsomenumber/?number=";
+        //String url = "http://callsomenumber/?number=";
 
         /**
          * Invoked on completion of document loading
@@ -109,7 +109,7 @@ namespace POC_LBG
                                     {                                        
                                         String hlText = match.Value;
                                         newChildNodeValue = newChildNodeValue.Replace(hlText,
-                                            "<a name=\"tel\" href=\"" + url + hlText + "\">" + hlText + "</a>");
+                                            "<a name=\"tel\" href=\"\">" + hlText + "</a>");
                                     }
                                     IHTMLElement newChild = document.createElement("text");
                                     newChild.innerHTML = newChildNodeValue;
@@ -127,7 +127,8 @@ namespace POC_LBG
             IHTMLElementCollection telElements = document.getElementsByName("tel");
             foreach (IHTMLElement el in telElements)
             {
-                el.onclick = dp;
+                IHTMLElement2 el2 = el as IHTMLElement2;
+                el2.attachEvent("onclick" , dp);
             }
             
             //System.Windows.Forms.MessageBox.Show("Elements: " + telElements.length);      
@@ -248,17 +249,14 @@ namespace POC_LBG
             if (BHORootKey != null)
                 BHORootKey.DeleteSubKey(thisGuid, false);
         }
-
-        
-   
     }
 
     public class DispatcherClass
     {
         [DispId(0)]
-        public void DefaultMethod()
+        public void DefaultMethod(IHTMLEventObj e)
         {
-            MessageBox.Show("ja");
+            MessageBox.Show("Telnr: " + e.srcElement.innerText);
         }
     }
 

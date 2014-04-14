@@ -35,7 +35,8 @@ namespace POC_LBG
     {
         private SHDocVw.WebBrowser browserWindow;
         private HTMLDocument document;
-        
+        private int parseCount;
+
         private static string BHOROOTKEYNAME = "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Browser Helper Objects";
         ArrayList forbiddenTags = new ArrayList { "script", "style", "img", "audio", "table", "time", "video" };
         String regex = "(0|\\+|\\(\\+|\\(0)[0-9- ()]{9,}";
@@ -48,10 +49,12 @@ namespace POC_LBG
         {
             if (pDisp != this.browserWindow)
                 return;
-            
+
+            parseCount = 0;
             HTMLDocument document = (HTMLDocument)browserWindow.Document;
             if (document != null)
             {
+
                 // Add events for hooking into DHTML DOM events
                 HTMLWindowEvents2_Event windowEvent = (document.parentWindow as HTMLWindowEvents2_Event);
                 HTMLDocumentEvents2_Event docEvent = (document as HTMLDocumentEvents2_Event);
@@ -78,11 +81,13 @@ namespace POC_LBG
          * 
          */
         public void HighLightPhoneNumbers() {
-            //String txt = "";
-            //int count = 0;
+
+            // Prevent 2nd parse run
+            if (parseCount == 1) return;            
+            parseCount++;
 
             document = (HTMLDocument)browserWindow.Document;
-            IHTMLElementCollection elements = document.body.all;
+            IHTMLElementCollection elements = document.body.all;            
 
             foreach (IHTMLElement el in elements)
             {
@@ -101,21 +106,31 @@ namespace POC_LBG
                                 {
                                     String newChildNodeValue = child.nodeValue;
                                     foreach (Match match in matches)
-                                    {
+                                    {                                        
                                         String hlText = match.Value;
                                         newChildNodeValue = newChildNodeValue.Replace(hlText,
-                                            "<span><a href=\"" + url + hlText + "\">" + hlText + "</a></span>");
+                                            "<a name=\"tel\" href=\"" + url + hlText + "\">" + hlText + "</a>");
                                     }
                                     IHTMLElement newChild = document.createElement("text");
                                     newChild.innerHTML = newChildNodeValue;
-                                    child.replaceNode((IHTMLDOMNode)newChild);
+                                    child.replaceNode((IHTMLDOMNode)newChild);                                        
+                                  
                                 }
                             }
                         }
                     }
                 }
+            }            
+            
+            // Get all a elements wit phonenumber and add onclick evenhandler
+            DispatcherClass dp = new DispatcherClass();            
+            IHTMLElementCollection telElements = document.getElementsByName("tel");
+            foreach (IHTMLElement el in telElements)
+            {
+                el.onclick = dp;
             }
-            //System.Windows.Forms.MessageBox.Show("Elements: " + count + txt);      
+            
+            //System.Windows.Forms.MessageBox.Show("Elements: " + telElements.length);      
         }
 
         public void MouseHandler(IHTMLEventObj e)
@@ -232,6 +247,19 @@ namespace POC_LBG
 
             if (BHORootKey != null)
                 BHORootKey.DeleteSubKey(thisGuid, false);
-        }        
-    }   
+        }
+
+        
+   
+    }
+
+    public class DispatcherClass
+    {
+        [DispId(0)]
+        public void DefaultMethod()
+        {
+            MessageBox.Show("ja");
+        }
+    }
+
 }
